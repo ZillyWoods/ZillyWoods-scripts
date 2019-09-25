@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_path=/usr/local/games
+install_path=/usr/games
 
 function err() {
     echo "[-] $1"
