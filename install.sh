@@ -14,6 +14,13 @@ function wrn() {
     echo "[!] $1"
 }
 
+# TODO: add me in menu
+function install_start_helper() {
+    cd /tmp
+    wget https://raw.githubusercontent.com/ZillyWoods/ZillyWoods-scripts/master/start.sh
+    sudo mv start.sh /usr/local/bin/zilly
+}
+
 function install_brew() {
     command -v brew >/dev/null 2>&1 || {
         wrn "to install dependencys you need brew."
