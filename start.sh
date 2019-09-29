@@ -1,32 +1,31 @@
 #!/bin/bash
 # helper script to start zillywoods client
-# actually more designed for personal use
-# it attempts to fix the ressource loading problem in a hacky way
-# future releases or properly installed ones do not need this script
 
-gitpath="~/Desktop/git"
+gitpath="$HOME/Desktop/git"
 reponame="ZillyWoods"
 
 # actually binarys next to data dirs
 declare -A aDataPaths
 
 aDataPaths+=(["cmake"]="zillywoods")
-aDataPaths+=(["bam64_dbg"]="build/x86_64/debug/zillywoods")
-aDataPaths+=(["bam64_rls"]="build/x86_64/release/zillywoods")
-aDataPaths+=(["bam32_dbg"]="build/x86_32/debug/zillywoods")
-aDataPaths+=(["bam32_rls"]="build/x86_32/release/zillywoods")
+aDataPaths+=(["bam64_dbg"]="x86_64/debug/zillywoods")
+aDataPaths+=(["bam64_rls"]="x86_64/release/zillywoods")
+aDataPaths+=(["bam32_dbg"]="x86_32/debug/zillywoods")
+aDataPaths+=(["bam32_rls"]="x86_32/release/zillywoods")
 
 function get_path() {
     file=$1
-    echo ${file##*/}
+    echo ${file%/*}
 }
 
 function check_data() {
     file=$1
     if [ ! -f "$file" ]
     then
+        echo "file does not exist '$file'"
         return
     fi
+    echo "file = $file"
     path=$(get_path $file)
     if [ ! -d "$path" ]
     then
@@ -41,12 +40,12 @@ function check_data() {
 }
 
 for key in ${!aDataPaths[@]}; do
-    file="$gitpath/$reponame/${aDataPaths[${key}]}"
+    file="$gitpath/$reponame/build/${aDataPaths[${key}]}"
     echo "${key} - $file"
     check_data $file
 done
 
 # last hope use ~.teeworlds/
+echo "fallback to home directory"
 cd
 zillywoods
-
