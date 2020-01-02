@@ -3,6 +3,9 @@
 
 gitpath="$HOME/Desktop/git"
 reponame="ZillyWoods"
+launch_client="gdb -ex='set confirm off' \
+                -ex='set pagination off' \
+                -ex=run -ex=bt -ex=quit --args ./zillywoods"
 
 # actually binarys next to data dirs
 declare -A aDataPaths
@@ -35,7 +38,7 @@ function check_data() {
     cd $path
     echo "cd into path=$path"
     cd "$path"
-    zillywoods
+    $launch_client
     exit 0
 }
 
@@ -48,4 +51,4 @@ done
 # last hope use ~.teeworlds/
 echo "fallback to home directory"
 cd
-zillywoods
+$launch_client

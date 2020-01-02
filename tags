@@ -1,0 +1,15 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+check_data	start.sh	/^function check_data() {$/;"	f
+err	install.sh	/^function err() {$/;"	f
+get_path	start.sh	/^function get_path() {$/;"	f
+has_package_manager	install.sh	/^has_package_manager() {$/;"	f
+install_brew	install.sh	/^function install_brew() {$/;"	f
+install_from_source	install.sh	/^function install_from_source() {$/;"	f
+install_start_helper	install.sh	/^function install_start_helper() {$/;"	f
+log	install.sh	/^function log() {$/;"	f
+wrn	install.sh	/^function wrn() {$/;"	f
