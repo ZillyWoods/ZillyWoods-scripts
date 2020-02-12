@@ -19,6 +19,7 @@ function install_start_helper() {
     cd /tmp
     wget https://raw.githubusercontent.com/ZillyWoods/ZillyWoods-scripts/master/start.sh
     sudo mv start.sh /usr/local/bin/zilly
+    sudo chmod +x /usr/local/bin/zilly
 }
 
 function install_brew() {
