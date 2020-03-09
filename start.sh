@@ -1,24 +1,38 @@
 #!/bin/bash
 # helper script to start zillywoods client
 
+clientname="${1:-ZillyWoods}"
+clientlower="${clientname,,}"
+
 gitpath="$HOME/Desktop/git"
-reponame="ZillyWoods"
+reponame="$clientname"
 launch_client="gdb -ex='set confirm off' \
                 -ex='set pagination off' \
-                -ex=run -ex=bt -ex=quit --args ./zillywoods"
+                -ex=run -ex=bt -ex=quit --args ./$clientlower"
 
 # actually binarys next to data dirs
 declare -A aDataPaths
 
-aDataPaths+=(["cmake"]="zillywoods")
-aDataPaths+=(["bam64_dbg"]="x86_64/debug/zillywoods")
-aDataPaths+=(["bam64_rls"]="x86_64/release/zillywoods")
-aDataPaths+=(["bam32_dbg"]="x86_32/debug/zillywoods")
-aDataPaths+=(["bam32_rls"]="x86_32/release/zillywoods")
+aDataPaths+=(["cmake"]="$clientlower")
+aDataPaths+=(["bam64_dbg"]="x86_64/debug/$clientlower")
+aDataPaths+=(["bam64_rls"]="x86_64/release/$clientlower")
+aDataPaths+=(["bam32_dbg"]="x86_32/debug/$clientlower")
+aDataPaths+=(["bam32_rls"]="x86_32/release/$clientlower")
 
 function get_path() {
     file=$1
-    echo ${file%/*}
+    echo "${file%/*}"
+}
+
+function launch_client() {
+    echo "-------"
+    echo ""
+    echo "  cd $(pwd)"
+    echo "  $launch_client"
+    echo ""
+    echo "-------"
+    eval "$launch_client"
+    exit "$?"
 }
 
 function check_data() {
@@ -29,26 +43,25 @@ function check_data() {
         return
     fi
     echo "file = $file"
-    path=$(get_path $file)
+    path="$(get_path "$file")"
     if [ ! -d "$path" ]
     then
         echo "Invalid path='$path'. Script is probably broken"
         exit 1
     fi
-    cd $path
+    cd "$path" || exit 1
     echo "cd into path=$path"
-    cd "$path"
-    $launch_client
-    exit 0
+    cd "$path" || exit 1
+    launch_client
 }
 
 for key in ${!aDataPaths[@]}; do
     file="$gitpath/$reponame/build/${aDataPaths[${key}]}"
     echo "${key} - $file"
-    check_data $file
+    check_data "$file"
 done
 
 # last hope use ~.teeworlds/
 echo "fallback to home directory"
-cd
-$launch_client
+cd || exit 1
+launch_client
