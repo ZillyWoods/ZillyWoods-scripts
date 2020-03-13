@@ -14,11 +14,21 @@ function wrn() {
     echo "[!] $1"
 }
 
-# TODO: add me in menu
 function install_start_helper() {
-    cd /tmp
-    wget https://raw.githubusercontent.com/ZillyWoods/ZillyWoods-scripts/master/start.sh
-    sudo mv start.sh /usr/local/bin/zilly
+    local tmp_dl
+    if [ -f /usr/local/bin/zilly ]
+    then
+        if ! grep -q 'https://github.com/ZillyWoods/ZillyWoods-scripts/blob/master/start.sh' /usr/local/bin/zilly
+        then
+            err "Error: could not update non official start script"
+            err "       please update manually:"
+            err "       /usr/local/bin/zilly"
+            return
+        fi
+    fi
+    tmp_dl="$(mktemp /tmp/zilly_start.sh.XXXXXXXX)"
+    wget -O "$tmp_dl" https://raw.githubusercontent.com/ZillyWoods/ZillyWoods-scripts/master/start.sh
+    sudo mv "$tmp_dl" /usr/local/bin/zilly
     sudo chmod +x /usr/local/bin/zilly
 }
 
@@ -93,6 +103,7 @@ then
     fi
 fi
 
+install_start_helper
 install_from_source
 
 log "done."
