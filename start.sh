@@ -1,23 +1,25 @@
 #!/bin/bash
+# https://github.com/ZillyWoods/ZillyWoods-scripts/blob/master/start.sh
 # helper script to start zillywoods client
 
 clientname="${1:-ZillyWoods}"
 clientlower="${clientname,,}"
+clientbinary="${2:-$clientlower}"
 
 gitpath="$HOME/Desktop/git"
 reponame="$clientname"
 launch_client="gdb -ex='set confirm off' \
                 -ex='set pagination off' \
-                -ex=run -ex=bt -ex=quit --args ./$clientlower"
+                -ex=run -ex=bt -ex=quit --args ./$clientbinary"
 
 # actually binarys next to data dirs
 declare -A aDataPaths
 
-aDataPaths+=(["cmake"]="$clientlower")
-aDataPaths+=(["bam64_dbg"]="x86_64/debug/$clientlower")
-aDataPaths+=(["bam64_rls"]="x86_64/release/$clientlower")
-aDataPaths+=(["bam32_dbg"]="x86_32/debug/$clientlower")
-aDataPaths+=(["bam32_rls"]="x86_32/release/$clientlower")
+aDataPaths+=(["cmake"]="$clientbinary")
+aDataPaths+=(["bam64_dbg"]="x86_64/debug/$clientbinary")
+aDataPaths+=(["bam64_rls"]="x86_64/release/$clientbinary")
+aDataPaths+=(["bam32_dbg"]="x86_32/debug/$clientbinary")
+aDataPaths+=(["bam32_rls"]="x86_32/release/$clientbinary")
 
 function get_path() {
     file=$1
