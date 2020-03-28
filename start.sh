@@ -79,10 +79,6 @@ function get_build_cmd() {
 	then
 		return
 	fi
-    if [ -d ../.git ]
-    then
-		git_save_pull >/dev/null 2>&1
-    fi
     if [ -f ../CMakeLists.txt ]
     then
         build="cd .. || exit 1;"
@@ -102,6 +98,10 @@ function get_build_cmd() {
 
 function launch_client() {
     local build
+    if [ -d ../.git ] && [ "$is_update" == "1" ]
+    then
+		git_save_pull
+    fi
     build="$(get_build_cmd)"
     echo "-------"
     echo ""
