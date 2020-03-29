@@ -19,7 +19,7 @@ gitpath="$HOME/Desktop/git"
 reponame="$clientname"
 run_client="gdb -ex='set confirm off' "
 run_client+="-ex='set pagination off' "
-run_client+="-ex=run -ex=bt -ex=quit --args ./$clientbinary"
+run_client+="-ex=run -ex=bt --args ./$clientbinary"
 
 # actually binarys next to data dirs
 declare -A aDataPaths
