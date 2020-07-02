@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_path=/usr/games
+install_path="$HOME/Desktop/git/"
 
 function err() {
     echo "[-] $1"
@@ -49,6 +49,31 @@ has_package_manager() {
     [ -x "$(which $1)" ]
 }
 
+function build_desktop() {
+    cd "$install_path" || { err "failed to cd"; exit 1; }
+    if [ ! -d ZillyWoods ]
+    then
+        git clone --recursive https://github.com/ZillyWoods/ZillyWoods
+    fi
+    cd ZillyWoods
+    mkdir build
+    cd build
+    cmake ..
+    make
+}
+
+function build_tmp() {
+    cd /tmp
+    repo=ZillyWoods_$(date +%s)
+    git clone --recursive https://github.com/ZillyWoods/ZillyWoods $repo
+    cd $repo
+    mkdir build
+    cd build
+    cmake ..
+    make
+    sudo cp zillywoods "$install_path/"
+}
+
 function install_from_source() {
     if [[ "$OSTYPE" == "linux-gnu" ]]
     then
@@ -73,21 +98,21 @@ function install_from_source() {
         err "Compiling source on your os is not supported."
         exit 1
     fi
-    cd /tmp
-    repo=ZillyWoods_$(date +%s)
-    git clone --recursive https://github.com/ZillyWoods/ZillyWoods $repo
-    cd $repo
-    mkdir build
-    cd build
-    cmake ..
-    make
-    sudo cp zillywoods "$install_path/"
+    build_desktop
 }
 
 if [ ! -d "$install_path" ]
 then
     err "Install directory not found '$install_path'"
-    exit 1
+    log "do you want to create it? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ ! "$yn" =~ [yY] ]]
+    then
+        log "aborted installation."
+        exit 1
+    fi
+    mkdir -p "$install_path"
 fi
 
 if [ -f "$install_path/zillywoods" ]
