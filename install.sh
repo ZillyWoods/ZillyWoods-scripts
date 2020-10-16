@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_path="$HOME/Desktop/git/"
+install_path="$HOME/Desktop/git"
 
 function err() {
     echo "[-] $1"
@@ -12,6 +12,22 @@ function log() {
 
 function wrn() {
     echo "[!] $1"
+}
+
+function install_desktop_app() {
+    if ! [[ "$OSTYPE" == "linux-gnu" ]]
+    then
+        return
+    fi
+    cd ~/.local/share/applications || { err "failed to cd into ~/.local/share/applications"; exit 1; }
+    if [ ! -f ZillyWoods.desktop ]
+    then
+        log "installing ZillyWoods.desktop"
+        curl https://raw.githubusercontent.com/ZillyWoods/ZillyWoods-scripts/master/ZillyWoods.desktop > ZillyWoods_tmp.txt
+        path_sed="$(echo "$install_path/ZillyWoods" | sed 's/\//\\\//g')"
+        sed "s/ZILLYWOODS_PATH/$path_sed/g" ZillyWoods_tmp.txt > ZillyWoods.desktop
+        rm ZillyWoods_tmp.txt
+    fi
 }
 
 function install_start_helper() {
@@ -46,29 +62,29 @@ function install_brew() {
 }
 
 has_package_manager() {
-    [ -x "$(which $1)" ]
+    [ -x "$(which "$1")" ]
 }
 
 function build_desktop() {
     cd "$install_path" || { err "failed to cd"; exit 1; }
     if [ ! -d ZillyWoods ]
     then
-        git clone --recursive https://github.com/ZillyWoods/ZillyWoods
+        git clone --recursive git@github.com:ZillyWoods/ZillyWoods
     fi
-    cd ZillyWoods
-    mkdir build
-    cd build
+    cd ZillyWoods || exit 1
+    mkdir -p build
+    cd build || exit 1
     cmake ..
     make
 }
 
 function build_tmp() {
-    cd /tmp
+    cd /tmp || exit 1
     repo=ZillyWoods_$(date +%s)
-    git clone --recursive https://github.com/ZillyWoods/ZillyWoods $repo
-    cd $repo
-    mkdir build
-    cd build
+    git clone --recursive https://github.com/ZillyWoods/ZillyWoods "$repo"
+    cd "$repo" || exit 1
+    mkdir -p build
+    cd build || exit 1
     cmake ..
     make
     sudo cp zillywoods "$install_path/"
@@ -130,5 +146,7 @@ fi
 
 install_start_helper
 install_from_source
+install_desktop_app
 
 log "done."
+
